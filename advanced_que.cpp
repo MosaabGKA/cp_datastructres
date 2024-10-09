@@ -1,3 +1,5 @@
+#include <stack>
+
 // Advanced Queue that calculates min, max, OR, and AND of numbers inside this queue in average O(1)
 template<typename T>
 struct Que {
