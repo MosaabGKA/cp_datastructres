@@ -50,7 +50,7 @@ private:
     }
 
 public:
-    Que(bool support_GCD, bool support_LCM) {
+    Que(bool support_GCD = false, bool support_LCM = false) {
         if (support_GCD) {
             G = true;
             right.members.push_back(&right.gc);
