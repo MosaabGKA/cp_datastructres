@@ -1,7 +1,7 @@
 #include <stack>
 #include <vector>
 
-// Advanced Queue that calculates min, max, OR, and AND of numbers inside this queue in average O(1) 
+// Advanced Queue that calculates min, max, OR, and AND of numbers inside this queue in average O(1)
 // and GCD and LCM in average O(log x) where x is the maximum value inside the queue
 
 template<typename T>
@@ -15,11 +15,13 @@ private:
     struct {
         stack<T> s, mn, mx, OR, AND, gc, lc;
         vector<stack<T> *> members = {&s, &mn, &mx, &OR, &AND};
+        T *bottom = nullptr;
     } left;
 
     struct {
         stack<T> s, mn, mx, OR, AND, gc, lc;
         vector<stack<T> *> members = {&s, &mn, &mx, &OR, &AND};
+        T *bottom = nullptr;
     } right;
 
     T gcd(T a, T b) {
@@ -34,6 +36,7 @@ private:
         auto top = right.s.top();
         for (auto mem: left.members)
             mem->push(top);
+        left.bottom = &left.s.top();
         for (auto mem: right.members)
             mem->pop();
         while (!right.s.empty()) {
@@ -47,6 +50,7 @@ private:
             for (auto mem: right.members)
                 mem->pop();
         }
+        right.bottom = nullptr;
     }
 
 public:
@@ -71,17 +75,29 @@ public:
         return right.s.size() + left.s.size();
     }
 
+    T &front() {
+        if (left.s.empty()) return *right.bottom;
+        return left.s.top();
+    }
+
+    T &back() {
+        if (right.s.empty()) return *left.bottom;
+        return right.s.top();
+    }
+
     void pop() {
         if (left.s.empty())
             trans();
         for (auto mem: left.members)
             mem->pop();
+        if (left.s.empty()) left.bottom = nullptr;
     }
 
     void push(T x) {
         if (right.s.empty()) {
             for (auto mem: right.members)
                 mem->push(x);
+            right.bottom = &right.s.top();
         } else {
             right.s.push(x);
             right.mn.push(min(right.mn.top(), x));
